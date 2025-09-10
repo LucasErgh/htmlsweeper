@@ -2,7 +2,7 @@ const columns = 10;
 const rows = 10;
 const cellSize = 20;
 
-const mineCount = 1;
+const mineCount = 13;
 
 var inGame = true;
 
@@ -115,20 +115,14 @@ function click(e) {
 }
 
 function hover(e) {
-    var x = e.clientX;
-    var y = e.clientY;
     if (!withinCanvas(e.clientX, e.clientY))
         return;
-    // console.log("Canvas Pos: (" + x + ", " + y + ")");
-    var [canvasX, canvasY] = getCanvasPos([x, y]);
 
-    // console.log("Canvas Pos: (" + canvasX + ", " + canvasY + ")");
-    var [cellX, cellY] = getCellByPos(x, y);
+    var [cellX, cellY] = getCellByPos(e.clientX, e.clientY);
     hoverCell.x = cellX;
     hoverCell.y = cellY;
     hoverCell.isHovering = true;
     draw();
-    // console.log("Cell: (" + cellX + ", " + cellY + ")");
 }
 
 function revealBoard() {
@@ -155,6 +149,13 @@ function checkWin() {
 }
 
 function draw() {
+    drawBackgroundColor();
+    drawMineCount();
+    drawFlags();
+    drawGrid();
+}
+
+function drawBackgroundColor() {
     for (let x = 0; x < columns; x++) {
         for (let y = 0; y < rows; y++) {
             if (shownCells[x][y] == 0) {
@@ -171,11 +172,9 @@ function draw() {
         }
     }
     ctx.fillStyle = "gray";
-    if (hoverCell.isHovering)
+    if (hoverCell.isHovering && shownCells[hoverCell.x][hoverCell.y] == 0) {
         ctx.fillRect(cellSize * hoverCell.x, cellSize * hoverCell.y, cellSize, cellSize);
-    drawMineCount();
-    drawFlags();
-    drawGrid();
+    }
 }
 
 function drawMineCount() {
