@@ -35,13 +35,12 @@ for (let i = 0; i < mineCount; ++i) {
     var row = Math.floor(Math.random() * rows);
     if (mines[row][column] == -1) i--;
     else mines[row][column] = -1;
-
-    // console.log("( " + row + ", " + column + " ), ");
 }
 
 fillAdjacentMines(mines);
 
 var titleBar = document.getElementById("titleText");
+var mineCounter = document.getElementById("mineCounter").innerText = "Mines: " + mineCount;
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
@@ -54,7 +53,7 @@ c.addEventListener("mousemove", hover);
 c.addEventListener("contextmenu", rightClick);
 
 function loadBody(e){
-    document.getElementById("mineCounter").innerText = "Mines: " + mineCount;
+    mineCounter.innerText = "Mines: " + mineCount;
 }
 
 function resetGame() {
@@ -96,6 +95,7 @@ function rightClick(e) {
         titleBar.innerText = "You Won!";
         inGame = false;
     }
+    
     draw();
 }
 
