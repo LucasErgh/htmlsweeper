@@ -81,7 +81,7 @@ function rightClick(e) {
     e.preventDefault();
     var [x, y] = getCellByPos(e.clientX, e.clientY);
     flags[x][y] = !flags[x][y];
-    if (checkWin == true) {
+    if (checkWin() == true) {
         alert("You Won!");
     }
     draw();
