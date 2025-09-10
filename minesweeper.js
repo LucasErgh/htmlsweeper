@@ -172,7 +172,11 @@ function drawBackgroundColor() {
         }
     }
     ctx.fillStyle = "gray";
-    if (hoverCell.isHovering && shownCells[hoverCell.x][hoverCell.y] == 0) {
+    
+    if (!isOutOfBounds([hoverCell.x, hoverCell.y])
+        && hoverCell.isHovering
+        && shownCells[hoverCell.x][hoverCell.y] == 0
+    ) {
         ctx.fillRect(cellSize * hoverCell.x, cellSize * hoverCell.y, cellSize, cellSize);
     }
 }
