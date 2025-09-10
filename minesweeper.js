@@ -149,16 +149,38 @@ function draw() {
             } else {
                 ctx.fillStyle = "white";
                 ctx.fillRect(cellSize * x, cellSize * y, cellSize, cellSize);
-                ctx.fillStyle = "red";
-                ctx.fillText(mines[x][y], cellSize * x + cellSize/2, cellSize * y + cellSize/2);
+
             }
         }
     }
     ctx.fillStyle = "gray";
     if (hoverCell.isHovering)
         ctx.fillRect(cellSize * hoverCell.x, cellSize * hoverCell.y, cellSize, cellSize);
+    drawMineCount();
     drawFlags();
     drawGrid();
+}
+
+function drawMineCount() {
+    for (let x = 0; x < columns; x++) {
+        for (let y = 0; y < rows; y++) {
+            if (shownCells[x][y] == 1) {
+                var curMineCount = mines[x][y];
+                switch(curMineCount) {
+                    case -1:
+                    case 0: continue;
+                    case 1: ctx.fillStyle = "#6ac7daff"; break;
+                    case 2: ctx.fillStyle = "#2692b3"; break;
+                    case 3: ctx.fillStyle = "#517689"; break;
+                    case 4: ctx.fillStyle = "#105166"; break;
+                    case 5: ctx.fillStyle = "#0f4656"; break;
+                    case 6: ctx.fillStyle = "#073040"; break;
+                    case 8: ctx.fillStyle = "#001017"; break;
+                }
+                ctx.fillText(curMineCount, cellSize * x + cellSize/2, cellSize * y + cellSize/2);
+            }
+        }
+    }
 }
 
 function drawFlags() {
