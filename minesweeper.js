@@ -1,7 +1,10 @@
 const columns = 10;
 const rows = 10;
 const cellSize = 20;
-const mineCount = 13;
+
+const mineCount = 1;
+
+var inGame = true;
 
 const directions = [
     [-1, -1], [0, -1], [ 1, -1],
@@ -37,6 +40,8 @@ for (let i = 0; i < mineCount; ++i) {
 }
 
 fillAdjacentMines(mines);
+
+var titleBar = document.getElementById("titleText");
 
 var c = document.getElementById("myCanvas");
 var ctx = c.getContext("2d");
@@ -74,39 +79,39 @@ function resetGame() {
         // console.log("( " + row + ", " + column + " ), ");
     }
     fillAdjacentMines(mines);
+    titleBar.innerText = "MineSweeper!";
     draw();
+    inGame = true;
 }
 
 function rightClick(e) {
     e.preventDefault();
+    if (!inGame) return;
+
     var [x, y] = getCellByPos(e.clientX, e.clientY);
     flags[x][y] = !flags[x][y];
     if (checkWin() == true) {
-        alert("You Won!");
+        revealBoard();
+        draw();
+        titleBar.innerText = "You Won!";
+        inGame = false;
     }
     draw();
 }
 
-function revealBoard() {
-    for(let x = 0; x < columns; ++x) {
-        for(let y = 0; y < rows; ++y) {
-            shownCells[x][y] = 1;
-        }
-    }
-}
+function click(e) {
+    if (!inGame) return;
 
-function checkWin() {
-    var win = true;
-    for(let x = 0; x < columns; ++x) {
-        for(let y = 0; y < rows; ++y) {
-            if (flags[x][y] == true && mines[x][y] != -1
-                || flags[x][y] == false && mines[x][y] == -1
-            ) {
-                win = false;
-            }
-        }
+    var [x, y] = getCellByPos(e.clientX, e.clientY);
+    if (mines[x][y] == -1){
+        revealBoard();
+        draw();
+        titleBar.innerText = "You Lost!";
+        inGame = false;
+    } else{
+        updateView(x, y);
     }
-    return win;
+    draw();
 }
 
 function hover(e) {
@@ -126,15 +131,27 @@ function hover(e) {
     // console.log("Cell: (" + cellX + ", " + cellY + ")");
 }
 
-function click(e) {
-    var [x, y] = getCellByPos(e.clientX, e.clientY);
-    if (mines[x][y] == -1){
-        revealBoard();
-        draw();
-    } else{
-        updateView(x, y);
+function revealBoard() {
+    for(let x = 0; x < columns; ++x) {
+        for(let y = 0; y < rows; ++y) {
+            shownCells[x][y] = 1;
+        }
     }
-    draw();
+}
+
+function checkWin() {
+    var win = true;
+    for(let x = 0; x < columns; ++x) {
+        for(let y = 0; y < rows; ++y) {
+            if (shownCells[x][y] != 1
+                && flags[x][y] == true && mines[x][y] != -1
+                || flags[x][y] == false && mines[x][y] == -1
+            ) {
+                win = false;
+            }
+        }
+    }
+    return win;
 }
 
 function draw() {
@@ -200,11 +217,11 @@ function drawGrid() {
     ctx.fillStyle = "#000000";
     for (let num = 0; num < columns + 1; num++) {
         ctx.moveTo(num*cellSize, 0);
-        ctx.lineTo(num*cellSize, 420)
+        ctx.lineTo(num*cellSize, c.height)
         ctx.stroke();
 
         ctx.moveTo(0, num*cellSize);
-        ctx.lineTo(420, num*cellSize);
+        ctx.lineTo(c.width, num*cellSize);
         ctx.stroke();
     }
 }
